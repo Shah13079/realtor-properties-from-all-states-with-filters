@@ -1,7 +1,7 @@
 This script crawl-scrape all properties that sold in recent 7 days on price over $750000 in 52 states of USA from realtor.com.
 The script fetch data from its API and and drop those listings that don't have buyer party email. 
 
-The script extracting the following fields from each listing:
+**The script extracting the following fields from each listing:**
 seller_represented_name
 seller_represented_email
 seller_rep_comp_name
@@ -28,15 +28,15 @@ This is script is build in python scrapy framework.
 
 Requirements: Python 3 +
 
-Required dependencies:
+**Required dependencies:**
 scrapy
 pandas
 
-OPEN CMD in project path scrapy.cfg and Install Requirements by:
+**OPEN CMD in project path scrapy.cfg and Install Requirements by:**
 pip install -r requirements.txt
 
 
-How to Run the program:
+**How to Run the program:**
 In the same CMD PATH: scrapy crawl sold -o output_file_name.csv
 
 #############################################################################################
