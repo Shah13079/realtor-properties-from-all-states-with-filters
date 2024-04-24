@@ -7,12 +7,9 @@ import pandas as pd
 
 class SoldListingsSpider(scrapy.Spider):
     name = 'sold'
-
     allowed_domains = ['www.realtor.com']
-
     
     def start_requests(self):
-    
         page_num = 1
         offset = 0
         total_pages = 0
@@ -74,7 +71,7 @@ class SoldListingsSpider(scrapy.Spider):
         if total_pages < pages_calculation :
             yield scrapy.Request(
                 url="https://www.realtor.com/api/v1/hulk_main_srp?client_id=rdc-x&schema=vesta",
-                body=json.dumps(sold_items_with_no_state(state_name,page_num,offset,state_code)),
+                body=json.dumps(sold_listing_query(state_name,page_num,offset,state_code)),
                 callback=self.parse_page,
                 dont_filter=True,
                 method="POST",
