@@ -50,7 +50,7 @@ pip install -r requirements.txt
 ```
 ---
 
-### Installation
+### Run program
 
 Navigate to the project directory in CMD and run the following command:
 ```
