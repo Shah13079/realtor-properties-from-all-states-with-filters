@@ -1,46 +1,61 @@
-This script crawl-scrape all properties that sold in recent 7 days on price over $750000 in 52 states of USA from realtor.com.
-The script fetch data from its API and and drop those listings that don't have buyer party email. 
+## Disclaimer
+This script is intended for educational purposes only. There is no intention to harm or overload the targeted website. The script is designed to scrape publicly available data using appropriate techniques to avoid causing any downtime for the website.
 
-**The script extracting the following fields from each listing:**<br>
-1) seller_represented_name
-2) seller_represented_email
-3) seller_rep_comp_name
-4) seller_represented_company_email
-            
-5) buyer_rep_name
-6) buyer_rep_email
-7) buyer_rep_link
-8) buyer_rep_company
+---
 
-            
-9) property_url
-10) list_date
-11) last_sold_date
-13) list_price
-14) last_sold_price
-15) city
-16) state
-17) postal_code
-18) primary_photo
+### Overview
+This script scrapes all properties sold in the last 7 days with prices over $750,000 across all 50 states of the USA from realtor.com. The script fetches data from the realtor.com API and filters out listings that do not have a buyer party email.
 
+---
 
-This is script is build in python scrapy framework.
+### Extracted Fields
+- seller_represented_name
+- seller_represented_email
+- seller_rep_comp_name
+- seller_represented_company_email
+- buyer_rep_name
+- buyer_rep_email
+- buyer_rep_link
+- buyer_rep_company
+- property_url
+- list_date
+- last_sold_date
+- list_price
+- last_sold_price
+- city
+- state
+- postal_code
+- primary_photo
 
-Requirements: Python 3 +
+---
 
-**Required dependencies:**<br>
-scrapy
-pandas
+### Framework
+This script is built using the Python Scrapy framework.
 
-**OPEN CMD in project path scrapy.cfg and Install Requirements by:** <br>
+---
+
+### Requirements
+- Python 3 +
+
+### Required Dependencies
+- scrapy
+- pandas
+
+---
+
+### Installation
+To install the required dependencies, open CMD in the project path (where `scrapy.cfg` is located) and run:
+```
 pip install -r requirements.txt
+```
+---
 
+### Installation
 
-**How to Run the program:**<br>
-In the same CMD PATH: scrapy crawl sold -o output_file_name.csv
+Navigate to the project directory in CMD and run the following command:
+```
+scrapy crawl sold -o output_file_name.csv
+```
 
-#############################################################################################
-
-
-
-
+Regards
+Hussain (Mrpythonic)

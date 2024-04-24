@@ -1,6 +1,12 @@
-from logging import Logger
 import datetime
 from datetime import timedelta
+
+req_headers = {
+                "User-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+                'accept':' application/json',
+                "accept-encoding": "gzip, deflate, br",
+                "content-type": "application/json"
+            }
 
 
 def property_query(property_id_is):
@@ -18,18 +24,9 @@ def property_query(property_id_is):
 
 
 
-req_headers = {
-                "User-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
-                'accept':' application/json',
-                "accept-encoding": "gzip, deflate, br",
-                "content-type": "application/json"
-            }
 
-
-
-
-def sold_items_with_no_state(location, page_num, offset, state_code):
-    
+def sold_listing_query(location, page_num, offset, state_code):
+    # Query for current week sold properties
     current_week= datetime.date.today() - timedelta(days=7)
     
     query = {
@@ -43,7 +40,7 @@ def sold_items_with_no_state(location, page_num, offset, state_code):
                             "sold"
                         ],
                         "sold_date":{
-                            "min":f"{current_week}T17:22:30.359Z"  #"2021-11-08T17:22:30.359Z"                 
+                            "min":f"{current_week}T17:22:30.359Z"               
                         },
                         "state_code":"%s"%(state_code)
                     },
@@ -73,7 +70,7 @@ def sold_items_with_no_state(location, page_num, offset, state_code):
                         "page_index":"%s"%(page_num)
                     },
                     "geoSupportedSlug":"",
-                    "resetMap":f"{str(datetime.date.today())}",#T17:16:17.801Z0.5298836860862377",
+                    "resetMap":f"{str(datetime.date.today())}",
                     "sort":[
                         {
                             "field":"sold_date",
@@ -94,7 +91,7 @@ def sold_items_with_no_state(location, page_num, offset, state_code):
                 "visitor_id":"1df8bb84-5a01-42b5-9620-575b54fabfba",
                 "isClient":True,
                 "seoPayload":{
-                    "asPath":"/realestateandhomes-search/%s/price-750000-na/show-recently-sold/pg-%s"%(location.replace(" ","-"),page_num),
+                    "asPath":"/realestateandhomes-search/%s/price-750000-na/show-recently-sold/pg-%s"%(location.replace(" ","-"), page_num),
                     "pageType":{
                         "silo":"search_result_page",
                         "status":"for_sale"
@@ -103,62 +100,3 @@ def sold_items_with_no_state(location, page_num, offset, state_code):
                 }
                 }
     return query
-
-
-
-
-states= [
-    {'AL':"Alabama"},
-    {'AK':"Alaska"},
-    {'AZ':"Arizona"},
-    {'AR':"Arkansas"},
-    {'CA':"California"},
-    {'CO':"Colorado"},
-    {'CT':"Connecticut"},
-    {'DC':"District of Columbia"},
-    {'FL':"Florida"},
-    {'GA':"Georgia"},
-    {'HI':"Hawaii"},
-    {'ID':"Idaho"},
-    {'IL':"Illinois"},
-    {'IN':"Indiana"},
-    {'IA':"Iowa"},
-    {'KS':"Kansas"},
-    {'KY':"Kentucky"},
-    {'LA':"Louisiana"},
-    {'ME':"Maine"},
-    {'MD':"Maryland"},
-    {'MA':"Massachusetts"},
-    {'MI':"Michigan"},
-    {'NV':"Nevada"},
-    {'NM':"New Mexico"},
-    {'NH':"New Hampshire"},
-    {'NJ':"New Jersey"},
-    {'MI':"Michigan"},
-    {'NE':"Nebraska"},
-    {'MT':"Montana"},
-    {'MO':"Missouri"},
-    {'MS':"Mississippi"},
-    {'MN':"Minnesota"},
-    {'NY':"New York"},
-    {'NC':"North Carolina"},
-    {'ND':"North Dakota"},
-    {'OH':"Ohio"},
-    {'OK':"Oklahoma"},
-    {'OR':"Oregon"},
-    {'PA':'Pennsylvania'},
-    {'RI':'Rhode Island'},
-    {'SC' : 'South Carolina'},
-    {'SD':'South Dakota'},
-    {"TN":"Tennessee"},
-    {"TX":'Texas'},
-    {"UT":'Utah'},
-    {"VT":"Vermont"},
-    {'VA':"Virginia"},
-    {'VI':'Virgin Islands'},
-    {"WA":"Washington"},
-    {"WV":'West Virginia'},
-    {"WI":"Wisconsin"},
-    {"WY":"Wyoming"}
-  
-]
