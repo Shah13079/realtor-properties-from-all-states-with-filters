@@ -1,12 +1,2 @@
-# Define here the models for your scraped items
-#
-# See documentation in:
-# https://docs.scrapy.org/en/latest/topics/items.html
-
-import scrapy
-
-
-class RealtorListingsItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+# Items are yielded as plain dicts by the spider for flexibility.
+# Define a scrapy.Item subclass here if strict field validation is needed.
