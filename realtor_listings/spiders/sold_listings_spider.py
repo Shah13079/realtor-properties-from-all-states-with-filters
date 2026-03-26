@@ -7,7 +7,7 @@ from pathlib import Path
 import scrapy
 import pandas as pd
 
-from ..utilities import property_query, req_headers, sold_listing_query, RESULTS_PER_PAGE
+from ..utilities import property_query, REQ_HEADERS, sold_listing_query, RESULTS_PER_PAGE
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ class SoldListingsSpider(scrapy.Spider):
         total_pages = 0
 
         df = pd.read_excel(STATES_FILE)
-        for index, row in df.iterrows():
+        for _index, row in df.iterrows():
             state = row['states']
             state_code = row['state_code']
             state, state_code = state.strip(), state_code.strip()
@@ -52,7 +52,7 @@ class SoldListingsSpider(scrapy.Spider):
                     "offset": offset,
                     "total_pages": total_pages
                 },
-                headers=req_headers
+                headers=REQ_HEADERS
             )
 
     def parse_page(self, response):
@@ -66,7 +66,8 @@ class SoldListingsSpider(scrapy.Spider):
         json_response = json.loads(response.body)
         total_count = json_response.get("data").get('home_search').get("total")
 
-        pages_calculation = (int(total_count) // RESULTS_PER_PAGE) + 1
+        # Calculate how many pages of results exist for this state
+        total_page_count = (int(total_count) // RESULTS_PER_PAGE) + 1
         page_listings = json_response.get("data").get('home_search').get("results")
 
         for listing in page_listings:
@@ -76,21 +77,22 @@ class SoldListingsSpider(scrapy.Spider):
                 body=json.dumps(property_query(property_id)),
                 callback=self.parse_property_page,
                 method="POST",
-                headers=req_headers
+                headers=REQ_HEADERS
             )
 
+        # Advance pagination counters and request the next page if more remain
         page_num += 1
         offset += RESULTS_PER_PAGE
         total_pages += 1
 
-        if total_pages < pages_calculation:
+        if total_pages < total_page_count:
             yield scrapy.Request(
                 url="https://www.realtor.com/api/v1/hulk_main_srp?client_id=rdc-x&schema=vesta",
                 body=json.dumps(sold_listing_query(state_name, page_num, offset, state_code)),
                 callback=self.parse_page,
                 dont_filter=True,
                 method="POST",
-                headers=req_headers,
+                headers=REQ_HEADERS,
                 meta={
                     "state_name": state_name,
                     "state_code": state_code,
@@ -102,12 +104,6 @@ class SoldListingsSpider(scrapy.Spider):
 
     def parse_property_page(self, response):
         """Extract seller/buyer details and property metadata from a detail response."""
-        primary_photo = buyer_details = buyer_rep_email = ' '
-        buyer_rep_name = buyer_rep_link = buyer_rep_company = ''
-        seller_rep_name = seller_rep_email = seller_rep_comp_name = seller_rep_comp_email = ''
-        home_data = property_url = list_date = last_sold_date = ''
-        last_sold_price = list_price = city = state = postal_code = ''
-
         json_response = json.loads(response.body)
         home_data = json_response.get("data", {}).get("home", {})
 
@@ -122,8 +118,8 @@ class SoldListingsSpider(scrapy.Spider):
         # Seller information
         seller_rep_name = advertiser_details.get('name')
         seller_rep_email = advertiser_details.get("email")
-        seller_rep_comp_name = advertiser_details.get("office").get("name")
-        seller_rep_comp_email = advertiser_details.get("office").get("email")
+        seller_rep_company_name = advertiser_details.get("office").get("name")
+        seller_rep_company_email = advertiser_details.get("office").get("email")
 
         # Buyer information
         buyer_rep_name = buyer_details.get("name")
@@ -138,7 +134,7 @@ class SoldListingsSpider(scrapy.Spider):
         last_sold_price = home_data.get("last_sold_price")
         list_price = home_data.get("list_price")
 
-        # Primary photo
+        # Upgrade the thumbnail URL to a higher-resolution variant (1024x768)
         primary_photo_small = home_data.get("primary_photo").get("href")
         primary_photo = primary_photo_small.replace('.jpg', '-w1024_h768_x1') + '.jpg'
 
@@ -152,8 +148,8 @@ class SoldListingsSpider(scrapy.Spider):
             # Seller information
             'seller_represented_name': seller_rep_name,
             'seller_represented_email': seller_rep_email,
-            'seller_rep_comp_name': seller_rep_comp_name,
-            'seller_represented_company_email': seller_rep_comp_email,
+            'seller_rep_company_name': seller_rep_company_name,
+            'seller_represented_company_email': seller_rep_company_email,
             # Buyer information
             'buyer_rep_name': buyer_rep_name,
             'buyer_rep_email': buyer_rep_email,

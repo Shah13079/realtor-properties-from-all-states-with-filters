@@ -1,4 +1,8 @@
-# Scrapy settings for realtor_listings project
+"""Scrapy settings for the realtor_listings project.
+
+Configures the bot name, spider module locations, robots.txt behaviour,
+and the item pipeline used to filter results.
+"""
 
 BOT_NAME = 'realtor_listings'
 
